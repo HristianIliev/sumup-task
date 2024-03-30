@@ -9,7 +9,7 @@ import (
 	"notification-service/internal/config"
 	"notification-service/internal/controllers"
 	"notification-service/internal/server"
-	"notification-service/internal/service/preferences"
+	"notification-service/internal/service"
 	"os"
 	"os/signal"
 	"sync"
@@ -36,8 +36,8 @@ func run(ctx context.Context, getenv func(string) string) error {
 		return err
 	}
 
-	preferencesService := preferences.New(db)
-	receiverController := controllers.New(preferencesService)
+	receiverService := service.NewReceiverService(db, getenv("TABLE_NAME"))
+	receiverController := controllers.New(receiverService)
 	srv := server.NewServer(receiverController)
 
 	httpServer := &http.Server{
@@ -76,6 +76,5 @@ func newclient() (*dynamodb.Client, error) {
 		return nil, err
 	}
 
-	c := dynamodb.NewFromConfig(cfg)
-	return c, nil
+	return dynamodb.NewFromConfig(cfg), nil
 }

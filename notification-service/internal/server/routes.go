@@ -1,32 +1,61 @@
 package server
 
 import (
+	"encoding/json"
+	"fmt"
 	"net/http"
 	"notification-service/internal/controllers"
+	"notification-service/internal/models/apimodels"
 
 	"github.com/gorilla/mux"
 )
 
 func addRoutes(mux *mux.Router, receiverController *controllers.ReceiverController) {
-	mux.HandleFunc("/lime/eth", GetTransactionsHandler(receiverController)).Methods("GET")
+	mux.HandleFunc("/receivers", CreateReceiverHandler(receiverController)).Methods("POST")
+	mux.HandleFunc("/receivers/{id}", GetReceiverHandler(receiverController)).Methods("GET")
 }
 
-var GetTransactionsHandler = func(receiverController *controllers.ReceiverController) http.HandlerFunc {
+var CreateReceiverHandler = func(receiverController *controllers.ReceiverController) http.HandlerFunc {
 	return http.HandlerFunc(
 		func(w http.ResponseWriter, r *http.Request) {
-			// hashes := r.URL.Query()["transactionHashes"]
+			var receiver apimodels.Receiver
+			err := json.NewDecoder(r.Body).Decode(&receiver)
+			if err != nil {
+				fmt.Println("here")
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(err)
 
-			// log.Printf("%v", hashes)
-			// body, err := receiverController.GetTransactions(hashes)
-			// if err != nil {
-			// 	w.WriteHeader(http.StatusInternalServerError)
-			// 	json.NewEncoder(w).Encode(err)
+				return
+			}
 
-			// 	return
-			// }
+			body, err := receiverController.RegisterReceiver(&receiver)
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(err)
 
-			// w.WriteHeader(http.StatusOK)
-			// json.NewEncoder(w).Encode(body)
+				return
+			}
+
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(body)
+		},
+	)
+}
+
+var GetReceiverHandler = func(receiverController *controllers.ReceiverController) http.HandlerFunc {
+	return http.HandlerFunc(
+		func(w http.ResponseWriter, r *http.Request) {
+			vars := mux.Vars(r)
+			response, err := receiverController.GetReceiver(vars["id"])
+			if err != nil {
+				w.WriteHeader(http.StatusInternalServerError)
+				json.NewEncoder(w).Encode(err)
+
+				return
+			}
+
+			w.WriteHeader(http.StatusOK)
+			json.NewEncoder(w).Encode(response)
 		},
 	)
 }

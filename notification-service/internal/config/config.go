@@ -9,8 +9,8 @@ var Config = func(key string) string {
 	switch key {
 	case "API_PORT":
 		return os.Getenv("API_PORT")
-	case "DB_CONNECTION_URL":
-		return os.Getenv("DB_CONNECTION_URL")
+	case "TABLE_NAME":
+		return os.Getenv("TABLE_NAME")
 	default:
 		return ""
 	}
