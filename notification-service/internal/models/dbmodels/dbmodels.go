@@ -1,6 +1,8 @@
 package dbmodels
 
-import "errors"
+import (
+	"notification-service/internal/models/enums"
+)
 
 type Receiver struct {
 	ID                 string
@@ -12,29 +14,6 @@ type Receiver struct {
 }
 
 type ChannelPreference struct {
-	Channel    string
-	Preference Preference
-}
-
-type Preference string
-
-const (
-	PreferenceNever  Preference = "never"
-	PreferenceAlways Preference = "always"
-)
-
-var ErrInvalidPreference = errors.New("invalid preference name")
-
-var dMap = map[string]Preference{
-	"never":  PreferenceNever,
-	"always": PreferenceAlways,
-}
-
-func NewPreferenceEnum(s string) (Preference, error) {
-	value, found := dMap[s]
-	if !found {
-		return "", ErrInvalidPreference
-	}
-
-	return value, nil
+	Channel    enums.Channel
+	Preference enums.Preference
 }

@@ -3,15 +3,15 @@ package controllers
 import (
 	"fmt"
 	"notification-service/internal/adapters"
-	"notification-service/internal/models/apimodels"
 	"notification-service/internal/service"
+	"notification-service/pkg/models/apimodels"
 )
 
 type ReceiverController struct {
 	receiverService *service.ReceiverService
 }
 
-func New(receiverService *service.ReceiverService) *ReceiverController {
+func NewReceiverController(receiverService *service.ReceiverService) *ReceiverController {
 	return &ReceiverController{
 		receiverService: receiverService,
 	}

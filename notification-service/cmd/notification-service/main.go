@@ -15,8 +15,9 @@ import (
 	"sync"
 	"time"
 
-	dynamodbconfig "github.com/aws/aws-sdk-go-v2/config"
+	awsconfig "github.com/aws/aws-sdk-go-v2/config"
 	"github.com/aws/aws-sdk-go-v2/service/dynamodb"
+	"github.com/aws/aws-sdk-go-v2/service/sns"
 )
 
 func main() {
@@ -31,14 +32,23 @@ func run(ctx context.Context, getenv func(string) string) error {
 	ctx, cancel := signal.NotifyContext(ctx, os.Kill)
 	defer cancel()
 
-	db, err := newclient()
+	db, err := newDBClient()
 	if err != nil {
 		return err
 	}
 
 	receiverService := service.NewReceiverService(db, getenv("TABLE_NAME"))
-	receiverController := controllers.New(receiverService)
-	srv := server.NewServer(receiverController)
+	receiverController := controllers.NewReceiverController(receiverService)
+
+	sns, err := newSNSClient()
+	if err != nil {
+		return err
+	}
+
+	notificationService := service.NewNotificationService(sns, getenv("SNS_TOPIC"))
+	notificationController := controllers.NewNotificationController(receiverService, notificationService)
+
+	srv := server.NewServer(receiverController, notificationController)
 
 	httpServer := &http.Server{
 		Addr:    net.JoinHostPort("0.0.0.0", getenv("API_PORT")),
@@ -70,11 +80,20 @@ func run(ctx context.Context, getenv func(string) string) error {
 	return nil
 }
 
-func newclient() (*dynamodb.Client, error) {
-	cfg, err := dynamodbconfig.LoadDefaultConfig(context.TODO())
+func newDBClient() (*dynamodb.Client, error) {
+	cfg, err := awsconfig.LoadDefaultConfig(context.TODO())
 	if err != nil {
 		return nil, err
 	}
 
 	return dynamodb.NewFromConfig(cfg), nil
+}
+
+func newSNSClient() (*sns.Client, error) {
+	cfg, err := awsconfig.LoadDefaultConfig(context.TODO())
+	if err != nil {
+		return nil, err
+	}
+
+	return sns.NewFromConfig(cfg), nil
 }

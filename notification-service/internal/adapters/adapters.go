@@ -2,8 +2,8 @@ package adapters
 
 import (
 	"fmt"
-	"notification-service/internal/models/apimodels"
 	"notification-service/internal/models/dbmodels"
+	"notification-service/pkg/models/apimodels"
 )
 
 func DbReceiverToApiReceiver(dbReceiver *dbmodels.Receiver) *apimodels.Receiver {
@@ -24,7 +24,7 @@ func DbPreferencesToApiPreferences(dbPreferences []*dbmodels.ChannelPreference) 
 	for _, preference := range dbPreferences {
 		result = append(result, &apimodels.ChannelPreference{
 			Channel:    preference.Channel,
-			Preference: string(preference.Preference),
+			Preference: preference.Preference,
 		})
 	}
 
@@ -46,14 +46,9 @@ func ApiReceiverToDbReceiver(apiReceiver *apimodels.Receiver) *dbmodels.Receiver
 func ApiPreferencesToDbPreferences(apiPreferences []*apimodels.ChannelPreference) []*dbmodels.ChannelPreference {
 	result := []*dbmodels.ChannelPreference{}
 	for _, preference := range apiPreferences {
-		val, err := dbmodels.NewPreferenceEnum(preference.Preference)
-		if err != nil {
-			continue
-		}
-
 		result = append(result, &dbmodels.ChannelPreference{
 			Channel:    preference.Channel,
-			Preference: val,
+			Preference: preference.Preference,
 		})
 	}
 

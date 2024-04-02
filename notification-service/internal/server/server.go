@@ -8,10 +8,10 @@ import (
 	"github.com/gorilla/mux"
 )
 
-func NewServer(receiverController *controllers.ReceiverController) http.Handler {
+func NewServer(receiverController *controllers.ReceiverController, notificationController *controllers.NotificationController) http.Handler {
 	mux := mux.NewRouter()
 
-	addRoutes(mux, receiverController)
+	addRoutes(mux, receiverController, notificationController)
 
 	return mux
 }

@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"notification-service/internal/models/dbmodels"
+	"notification-service/internal/models/enums"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/feature/dynamodb/attributevalue"
@@ -15,9 +16,9 @@ import (
 )
 
 var defaultPreferences = []*dbmodels.ChannelPreference{
-	{Channel: "email", Preference: dbmodels.PreferenceAlways},
-	{Channel: "sms", Preference: dbmodels.PreferenceAlways},
-	{Channel: "slack", Preference: dbmodels.PreferenceAlways},
+	{Channel: "email", Preference: enums.PreferenceAlways},
+	{Channel: "sms", Preference: enums.PreferenceAlways},
+	{Channel: "slack", Preference: enums.PreferenceAlways},
 }
 
 type ReceiverService struct {
