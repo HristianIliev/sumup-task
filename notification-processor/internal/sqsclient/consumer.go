@@ -4,6 +4,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log"
 	"time"
 
 	"notification-service/pkg/models/apimodels"
@@ -38,24 +39,24 @@ func NewConsumer(id int, sqsClient MessagePoller, pollDelayInSec int, subscriber
 }
 
 func (c *Consumer) Run(ctx context.Context) {
-	fmt.Printf("Worker %d started listening for notifications\n", c.id)
+	log.Printf("Worker %d started listening for notifications\n", c.id)
 
 	delayCh := time.NewTicker(c.pollDelay)
 	for {
 		select {
 		case <-ctx.Done():
-			fmt.Printf("Stopping consumer: %v\n", ctx.Err())
+			log.Printf("Stopping consumer: %v\n", ctx.Err())
 
 			delayCh.Stop()
 
 			return
 		case <-delayCh.C:
-			fmt.Printf("Checking SQS for messages %d\n", c.id)
+			log.Printf("Checking SQS for messages %d\n", c.id)
 		}
 
 		msgs, err := c.sqsClient.ReceiveMessages()
 		if err != nil {
-			fmt.Println("Failed to receive message: ", err)
+			log.Println("Failed to receive message: ", err)
 			continue
 		}
 
@@ -63,7 +64,7 @@ func (c *Consumer) Run(ctx context.Context) {
 		for _, msg := range msgs {
 			err = c.process(msg)
 			if err != nil {
-				fmt.Println("Failed to process notification. Message will be processed upon next retrieval: ", err)
+				log.Println("Failed to process notification. Message will be processed upon next retrieval: ", err)
 				continue
 			}
 
@@ -72,7 +73,7 @@ func (c *Consumer) Run(ctx context.Context) {
 
 		err = c.sqsClient.DeleteMessages(processedMsgs)
 		if err != nil {
-			fmt.Println("Failed to delete messages: ", err)
+			log.Println("Failed to delete messages: ", err)
 
 			continue
 		}

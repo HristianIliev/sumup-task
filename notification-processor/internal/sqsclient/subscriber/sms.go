@@ -1,7 +1,7 @@
 package subscriber
 
 import (
-	"fmt"
+	"log"
 	"notification-service/pkg/models/apimodels"
 )
 
@@ -19,7 +19,7 @@ func (e *SMSSubscriber) Should(notification *apimodels.Message) bool {
 }
 
 func (e *SMSSubscriber) Handle(notification *apimodels.Message) error {
-	fmt.Printf("Sending sms to receiver %s with content %s\n", notification.Phone, notification.Content)
+	log.Printf("Sending sms to receiver %s with content %s\n", notification.Phone, notification.Content)
 
 	return nil
 }

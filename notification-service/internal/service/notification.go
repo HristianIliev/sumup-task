@@ -2,7 +2,7 @@ package service
 
 import (
 	"context"
-	"fmt"
+	"log"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/aws-sdk-go-v2/service/sns"
@@ -22,12 +22,12 @@ func NewNotificationService(snsClient *sns.Client, topic string) *NotificationSe
 }
 
 func (n *NotificationService) SendMessages(messages []string) error {
-	UUID, err := uuid.NewUUID()
-	if err != nil {
-		return err
-	}
-
 	for _, msg := range messages {
+		UUID, err := uuid.NewUUID()
+		if err != nil {
+			return err
+		}
+
 		_, err = n.snsClient.Publish(context.TODO(), &sns.PublishInput{
 			Message:                &msg,
 			MessageGroupId:         aws.String(UUID.String()),
@@ -36,11 +36,11 @@ func (n *NotificationService) SendMessages(messages []string) error {
 		})
 
 		if err != nil {
-			fmt.Println("Error publishing message to SNS topic:", err)
+			log.Println("Error publishing message to SNS topic:", err)
 			return err
 		}
 
-		fmt.Printf("Successfully sent %s\n", msg)
+		log.Printf("Successfully sent %s\n", msg)
 	}
 
 	return nil

@@ -2,7 +2,7 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"strconv"
 	"sync"
 
@@ -20,7 +20,7 @@ func main() {
 
 	cfg, err := awsconfig.LoadDefaultConfig(context.Background())
 	if err != nil {
-		fmt.Println("Error loading AWS config:", err)
+		log.Fatal("error loading AWS config:", err)
 		return
 	}
 
@@ -36,7 +36,7 @@ func main() {
 
 	workers, err := strconv.Atoi(config.Config("WORKERS"))
 	if err != nil {
-		fmt.Println(err)
+		log.Fatalf("number of workers configuration is not a valid int")
 		return
 	}
 
@@ -47,7 +47,7 @@ func main() {
 
 		pollDelay, err := strconv.Atoi(config.Config("POLL_DELAY"))
 		if err != nil {
-			fmt.Println(err)
+			log.Fatalf("poll delay configuration is not a valid int")
 			return
 		}
 

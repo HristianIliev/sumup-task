@@ -1,7 +1,7 @@
 package subscriber
 
 import (
-	"fmt"
+	"log"
 	"notification-service/pkg/models/apimodels"
 )
 
@@ -19,7 +19,7 @@ func (e *SlackSubscriber) Should(notification *apimodels.Message) bool {
 }
 
 func (e *SlackSubscriber) Handle(notification *apimodels.Message) error {
-	fmt.Printf("Sending slack message to receiver %s with content %s\n", notification.Endpoint, notification.Content)
+	log.Printf("Sending slack message to receiver %s with content %s\n", notification.Endpoint, notification.Content)
 
 	return nil
 }

@@ -2,8 +2,6 @@ package controllers
 
 import (
 	"encoding/json"
-	"errors"
-	"fmt"
 	"notification-service/internal/models/enums"
 	"notification-service/internal/service"
 	"notification-service/pkg/models/apimodels"
@@ -23,11 +21,7 @@ func NewNotificationController(receiverService *service.ReceiverService, notific
 
 func (n *NotificationController) SendNotification(notification *apimodels.Notification) error {
 	receiver, err := n.receiverService.GetReceiver(notification.ReceiverID)
-	if errors.Is(service.ErrReceiverNotFound, err) {
-		fmt.Println("Receiver not found")
-		return err
-	} else if err != nil {
-		fmt.Println("other err", err)
+	if err != nil {
 		return err
 	}
 
@@ -51,7 +45,6 @@ func (n *NotificationController) SendNotification(notification *apimodels.Notifi
 
 		jsonData, err := json.Marshal(clone)
 		if err != nil {
-			fmt.Println("Error:", err)
 			return err
 		}
 

@@ -58,7 +58,7 @@ func run(ctx context.Context, getenv func(string) string) error {
 	go func() {
 		log.Printf("listening on %s\n", httpServer.Addr)
 		if err := httpServer.ListenAndServe(); err != nil && err != http.ErrServerClosed {
-			fmt.Fprintf(os.Stderr, "error listening and serving: %s\n", err)
+			log.Fatalf("error listening and serving: %s\n", err)
 		}
 	}()
 
@@ -72,7 +72,7 @@ func run(ctx context.Context, getenv func(string) string) error {
 		shutdownCtx, cancel := context.WithTimeout(ctx, 10*time.Second)
 		defer cancel()
 		if err := httpServer.Shutdown(shutdownCtx); err != nil {
-			fmt.Fprintf(os.Stderr, "error shutting down http server: %s\n", err)
+			log.Fatalf("error shutting down http server: %s\n", err)
 		}
 	}()
 	wg.Wait()

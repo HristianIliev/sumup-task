@@ -2,7 +2,7 @@ package sqsclient
 
 import (
 	"context"
-	"fmt"
+	"log"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/service/sqs"
@@ -37,12 +37,12 @@ func (c *SQSClient) ReceiveMessages() ([]types.Message, error) {
 	}
 
 	if len(output.Messages) == 0 {
-		fmt.Println("No new SQS Messages")
+		log.Printf("No new SQS Messages for queue %s\n", c.queueURL)
 
 		return nil, nil
 	}
 
-	fmt.Printf("Received %d messages.\n", len(output.Messages))
+	log.Printf("Received %d messages.\n", len(output.Messages))
 
 	return output.Messages, nil
 }
@@ -62,7 +62,7 @@ func (c *SQSClient) DeleteMessages(msgs []types.Message) error {
 			return err
 		}
 
-		fmt.Printf("SQS message with id %s was deleted\n", *msg.MessageId)
+		log.Printf("SQS message with id %s was deleted\n", *msg.MessageId)
 	}
 
 	return nil

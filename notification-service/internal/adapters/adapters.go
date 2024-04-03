@@ -1,13 +1,11 @@
 package adapters
 
 import (
-	"fmt"
 	"notification-service/internal/models/dbmodels"
 	"notification-service/pkg/models/apimodels"
 )
 
 func DbReceiverToApiReceiver(dbReceiver *dbmodels.Receiver) *apimodels.Receiver {
-	fmt.Printf("%+v", dbReceiver)
 	result := &apimodels.Receiver{
 		ID:                 dbReceiver.ID,
 		ChannelPreferences: DbPreferencesToApiPreferences(dbReceiver.ChannelPreferences),

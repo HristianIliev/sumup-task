@@ -3,7 +3,7 @@ package service
 import (
 	"context"
 	"errors"
-	"fmt"
+	"log"
 	"notification-service/internal/models/dbmodels"
 	"notification-service/internal/models/enums"
 
@@ -78,7 +78,7 @@ func (r *ReceiverService) CreateReceiver(body *dbmodels.Receiver) (*dbmodels.Rec
 
 	item, err := marshalMap(newReceiver)
 	if err != nil {
-		fmt.Println("Error marshalling map:", err)
+		log.Println("Error marshalling map:", err)
 		return nil, err
 	}
 
@@ -97,11 +97,11 @@ func (r *ReceiverService) CreateReceiver(body *dbmodels.Receiver) (*dbmodels.Rec
 	if err != nil {
 		var ccf *types.ConditionalCheckFailedException
 		if errors.As(err, &ccf) {
-			fmt.Println("Item with the same ID already exists")
+			log.Println("Item with the same ID already exists")
 			return nil, err
 		}
 
-		fmt.Println("Error putting item:", err)
+		log.Println("Error putting item:", err)
 		return nil, err
 	}
 
@@ -121,7 +121,7 @@ func unmarshalMap(item map[string]types.AttributeValue) (*dbmodels.Receiver, err
 	var result dbmodels.Receiver
 	err := attributevalue.UnmarshalMap(item, &result)
 	if err != nil {
-		fmt.Println("Error unmarshalling item:", err)
+		log.Println("Error unmarshalling item:", err)
 		return nil, err
 	}
 
