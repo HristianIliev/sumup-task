@@ -104,7 +104,8 @@ The commands that can be used to run the system are:
 
 Despite that there is a bunch of configuration on AWS side that needs to be done in order to actually run the application, so if that is something that you are interested in, please contact me.
 
-<img src="https://raw.githubusercontent.com/nikhith265/submit_button_group/298c26b5a3fcfe936f16deef0e8712c2fdc1b635/attachments/gif/sample_gif.gif" alt="gif" width="300" height="540">
+
+https://github.com/HristianIliev/sumup-task/assets/18559816/bb38c401-5129-44b7-9eca-4be1c11aba85
 
 
 ### Main implementation details that were left out
